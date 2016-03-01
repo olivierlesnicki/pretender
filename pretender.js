@@ -139,7 +139,13 @@ function interceptor(pretender) {
   function createPassthrough(fakeXHR) {
     var xhr = fakeXHR._passthroughRequest = new pretender._nativeXMLHttpRequest();
 
-    // Use onload if the browser supports it
+
+    if (fakeXHR.responseType === 'arraybuffer') {
+      lifecycleProps = ['readyState', 'response', 'status', 'statusText'];
+      xhr.responseType = fakeXHR.responseType;
+    }
+
+    // Use onload instead of onreadystatechange if the browser supports it
     if ('onload' in xhr) {
       evts.push('load');
     }
@@ -147,7 +153,7 @@ function interceptor(pretender) {
     evts.push('readystatechange');
 
     // add progress event for async calls
-    if (fakeXHR.async) {
+    if (fakeXHR.async && fakeXHR.responseType !== 'arraybuffer') {
       evts.push('progress');
     }
 
