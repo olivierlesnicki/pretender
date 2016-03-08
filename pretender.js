@@ -142,7 +142,6 @@ function interceptor(pretender) {
 
     if (fakeXHR.responseType === 'arraybuffer') {
       lifecycleProps = ['readyState', 'response', 'status', 'statusText'];
-      xhr.responseType = fakeXHR.responseType;
     }
 
     // Use onload instead of onreadystatechange if the browser supports it
@@ -181,6 +180,11 @@ function interceptor(pretender) {
     /*jshint +W083 */
     // jscs:enable requireCurlyBraces
     xhr.open(fakeXHR.method, fakeXHR.url, fakeXHR.async, fakeXHR.username, fakeXHR.password);
+
+    if (fakeXHR.responseType === 'arraybuffer') {
+      xhr.responseType = fakeXHR.responseType;
+    }
+
     if (fakeXHR.async) {
       xhr.timeout = fakeXHR.timeout;
       xhr.withCredentials = fakeXHR.withCredentials;
